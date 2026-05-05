@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Surprise 🎂</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 600px;
+  padding: 20px;
+}
+
+button {
+  margin: 10px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #ff4d6d;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #ff1e4d;
+}
+
+input {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  margin-top: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.fade {
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Fireworks */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="container" id="app"></div>
+
+<script>
+const app = document.getElementById("app");
+
+function show(content) {
+  app.innerHTML = `<div class="fade">${content}</div>`;
+}
+
+// PART 1
+function part1() {
+  show(`
+    <p>Wait… today feels illegal 🤨</p>
+    <p>Someone just leveled up 👀</p>
+    <p>Should I say it… or make you work for it?</p>
+    <button onclick="part2()">Continue</button>
+  `);
+}
+
+// PART 2
+function part2() {
+  show(`
+    <button onclick="safe()">Click responsibly</button>
+    <button onclick="danger()">Click dangerously 😈</button>
+  `);
+}
+
+function safe() {
+  show(`
+    <p>Hmm… safe choice</p>
+    <p>But today isn’t a safe day 😌</p>
+    <button onclick="part3()">Continue</button>
+  `);
+}
+
+function danger() {
+  show(`
+    <p>Ah yes… I expected this</p>
+    <p>Chaos suits you.</p>
+    <button onclick="part3()">Continue</button>
+  `);
+}
+
+// PART 3
+function part3() {
+  show(`
+    <p>You and your random mood switches😭</p>
+    <p>Like one second normal…</p>
+    <p>Next second — completely different person.</p>
+    <p>And the award for…</p>
+    <p>Professional overthinker goes to…</p>
+    <button onclick="afterMahan()">mahan insaan</button>
+  `);
+}
+
+function afterMahan() {
+  show(`
+    <p>Yes yes… we all know who that is 😌</p>
+    <button onclick="part4()">Continue</button>
+  `);
+}
+
+// PART 4
+function part4() {
+  show(`
+    <p>From random conversations…</p>
+    <p>To those unexpected talks…</p>
+    <p>Somehow…</p>
+    <p>You became important without permission.</p>
+    <button onclick="part5()">Continue</button>
+  `);
+}
+
+// PART 5 (PASSWORD)
+function part5() {
+  show(`
+    <p>Wait…</p>
+    <p>Before you go further…</p>
+    <p>When was the <i>mahan insaan</i> born? 🎂</p>
+    <input id="pass" placeholder="Enter date">
+    <br>
+    <small>Hint: today 😌</small><br><br>
+    <button onclick="checkPass()">Submit</button>
+    <p id="error" style="color:red;"></p>
+  `);
+}
+
+function checkPass() {
+  let val = document.getElementById("pass").value.trim().toLowerCase();
+  if (val === "6 may" || val === "6may") {
+    show(`
+      <p>Of course you know 😤</p>
+      <p>Good. Continue.</p>
+      <button onclick="part6()">Continue</button>
+    `);
+  } else {
+    document.getElementById("error").innerText = "Wrong 😑 Try again… it’s not that hard.";
+  }
+}
+
+// PART 6 (CELEBRATION)
+function part6() {
+  startFireworks();
+  show(`
+    <h1>🎉 HAPPY BIRTHDAY MAHAN INSAAN 🎂</h1>
+    <p>You survived another year 😌</p>
+    <p>Still chaotic… but we accept it.</p>
+    <p>A little annoying? Yes.</p>
+    <p>Important? Also yes.</p>
+    <p>But seriously…</p>
+    <p>I’m really glad you exist.</p>
+    <button onclick="part7()">okay… one last thing?</button>
+  `);
+}
+
+// PART 7 (HIDDEN)
+function part7() {
+  show(`
+    <p>I’d still choose you as a friend.</p>
+    <p>Again.</p>
+    <button onclick="end()">Go back</button>
+  `);
+}
+
+// END
+function end() {
+  show(`
+    <p>Too late now :)</p>
+    <p>You’re stuck with me.</p>
+  `);
+}
+
+// FIREWORKS
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function startFireworks() {
+  setInterval(() => {
+    for (let i = 0; i < 50; i++) {
+      particles.push({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        dx: (Math.random() - 0.5) * 6,
+        dy: (Math.random() - 0.5) * 6,
+        life: 100
+      });
+    }
+  }, 500);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach((p, i) => {
+    p.x += p.dx;
+    p.y += p.dy;
+    p.life--;
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(p.x, p.y, 2, 2);
+
+    if (p.life <= 0) particles.splice(i, 1);
+  });
+}
+
+animate();
+
+// start
+part1();
+</script>
+
+</body>
+</html>
