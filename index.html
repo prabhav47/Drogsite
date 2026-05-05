@@ -21,6 +21,7 @@ body {
 .container {
   max-width: 600px;
   padding: 20px;
+  z-index: 2;
 }
 
 button {
@@ -42,15 +43,14 @@ input {
   padding: 10px;
   border-radius: 6px;
   border: none;
-  margin-top: 10px;
 }
 
 .fade {
-  animation: fadeIn 0.6s ease;
+  animation: fadeIn 0.5s ease;
 }
 
 @keyframes fadeIn {
-  from {opacity: 0; transform: translateY(20px);}
+  from {opacity: 0; transform: translateY(15px);}
   to {opacity: 1; transform: translateY(0);}
 }
 
@@ -58,6 +58,7 @@ canvas {
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 1;
   pointer-events: none;
 }
 </style>
@@ -66,6 +67,7 @@ canvas {
 <body>
 
 <canvas id="fireworks"></canvas>
+
 <div class="container" id="app"></div>
 
 <audio id="bgm" src="music.mp3" loop></audio>
@@ -77,21 +79,32 @@ const bgm = document.getElementById("bgm");
 const clickSound = document.getElementById("clickSound");
 
 let musicStarted = false;
+let fireworksStarted = false;
 
-function playClick() {
-  clickSound.currentTime = 0;
-  clickSound.play();
+// SOUND
+function click() {
+  try {
+    clickSound.currentTime = 0;
+    clickSound.play();
+  } catch(e){}
 }
 
 function startMusic() {
   if (!musicStarted) {
-    bgm.play().catch(() => {});
+    bgm.play().catch(()=>{});
     musicStarted = true;
   }
 }
 
-function show(content) {
-  app.innerHTML = `<div class="fade">${content}</div>`;
+function go(fn) {
+  click();
+  startMusic();
+  fn();
+}
+
+// RENDER
+function show(html) {
+  app.innerHTML = `<div class="fade">${html}</div>`;
 }
 
 // PART 1
@@ -100,22 +113,15 @@ function part1() {
     <p>Wait… today feels illegal 🤨</p>
     <p>Someone just leveled up 👀</p>
     <p>Should I say it… or make you work for it?</p>
-    <button onclick="next(part2)">Continue</button>
+    <button onclick="go(part2)">Continue</button>
   `);
-}
-
-// Wrapper for sound + music
-function next(fn) {
-  playClick();
-  startMusic();
-  fn();
 }
 
 // PART 2
 function part2() {
   show(`
-    <button onclick="next(safe)">Click responsibly</button>
-    <button onclick="next(danger)">Click dangerously 😈</button>
+    <button onclick="go(safe)">Click responsibly</button>
+    <button onclick="go(danger)">Click dangerously 😈</button>
   `);
 }
 
@@ -123,7 +129,7 @@ function safe() {
   show(`
     <p>Hmm… safe choice</p>
     <p>But today isn’t a safe day 😌</p>
-    <button onclick="next(part3)">Continue</button>
+    <button onclick="go(part3)">Continue</button>
   `);
 }
 
@@ -131,7 +137,7 @@ function danger() {
   show(`
     <p>Ah yes… I expected this</p>
     <p>Chaos suits you.</p>
-    <button onclick="next(part3)">Continue</button>
+    <button onclick="go(part3)">Continue</button>
   `);
 }
 
@@ -143,14 +149,14 @@ function part3() {
     <p>Next second — completely different person.</p>
     <p>And the award for…</p>
     <p>Professional overthinker goes to…</p>
-    <button onclick="next(afterMahan)">mahan insaan</button>
+    <button onclick="go(afterMahan)">mahan insaan</button>
   `);
 }
 
 function afterMahan() {
   show(`
     <p>Yes yes… we all know who that is 😌</p>
-    <button onclick="next(part4)">Continue</button>
+    <button onclick="go(part4)">Continue</button>
   `);
 }
 
@@ -161,7 +167,7 @@ function part4() {
     <p>To those unexpected talks…</p>
     <p>Somehow…</p>
     <p>You became important without permission.</p>
-    <button onclick="next(part5)">Continue</button>
+    <button onclick="go(part5)">Continue</button>
   `);
 }
 
@@ -171,28 +177,28 @@ function part5() {
     <p>Wait…</p>
     <p>Before you go further…</p>
     <p>When was the <i>mahan insaan</i> born? 🎂</p>
-    
+
     <input id="pass" placeholder="Enter date"><br><br>
-    
-    <button onclick="showHint()">Hint</button>
-    <button onclick="checkPass()">Submit</button>
-    
+
+    <button onclick="hint()">Hint</button>
+    <button onclick="check()">Submit</button>
+
     <p id="hintText"></p>
     <p id="error" style="color:red;"></p>
   `);
 }
 
-function showHint() {
-  playClick();
+function hint() {
+  click();
   document.getElementById("hintText").innerText = "today 😌";
 }
 
-function checkPass() {
-  playClick();
+function check() {
+  click();
   let val = document.getElementById("pass").value.trim().toLowerCase();
 
   if (val === "6 may" || val === "6may") {
-    part6(); // DIRECT reveal
+    part6();
   } else {
     document.getElementById("error").innerText = "Wrong 😑 Try again…";
   }
@@ -209,15 +215,15 @@ function part6() {
     <p>Important? Also yes.</p>
     <p>But seriously…</p>
     <p>I’m really glad you exist.</p>
-    <button onclick="next(part7)">okay… one last thing?</button>
+    <button onclick="go(part7)">okay… one last thing?</button>
   `);
 }
 
-// PART 7 HIDDEN
+// PART 7
 function part7() {
   show(`
     <p>You matter more than you realize.</p>
-    <button onclick="next(end)">Go back</button>
+    <button onclick="go(end)">Go back</button>
   `);
 }
 
@@ -229,34 +235,44 @@ function end() {
   `);
 }
 
-// FIREWORKS (BIGGER)
+// FIREWORKS
 const canvas = document.getElementById("fireworks");
 const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
 let particles = [];
 
 function startFireworks() {
+  if (fireworksStarted) return;
+  fireworksStarted = true;
+
   setInterval(() => {
     for (let i = 0; i < 120; i++) {
       particles.push({
         x: canvas.width / 2,
         y: canvas.height / 2,
-        dx: (Math.random() - 0.5) * 10,
-        dy: (Math.random() - 0.5) * 10,
-        life: 120
+        dx: (Math.random() - 0.5) * 9,
+        dy: (Math.random() - 0.5) * 9,
+        life: 100
       });
     }
-  }, 600);
+  }, 700);
 }
 
 function animate() {
   requestAnimationFrame(animate);
-  ctx.fillStyle = "rgba(0,0,0,0.2)";
+
+  ctx.fillStyle = "rgba(0,0,0,0.15)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  particles.forEach((p, i) => {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    let p = particles[i];
     p.x += p.dx;
     p.y += p.dy;
     p.life--;
@@ -265,12 +281,12 @@ function animate() {
     ctx.fillRect(p.x, p.y, 3, 3);
 
     if (p.life <= 0) particles.splice(i, 1);
-  });
+  }
 }
 
 animate();
 
-// start
+// START
 part1();
 </script>
 
