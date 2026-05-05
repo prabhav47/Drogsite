@@ -2,331 +2,58 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Birthday Surprise 🎂</title>
+<title>👀</title>
 
 <style>
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
-  color: white;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
+  color: white;
+  font-family: Arial, sans-serif;
   text-align: center;
-  overflow: hidden;
 }
 
 .container {
-  max-width: 600px;
-  padding: 20px;
-  z-index: 2;
+  animation: fadeIn 0.8s ease;
 }
 
-button {
-  margin: 10px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #ff4d6d;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:hover {
-  background: #ff1e4d;
-}
-
-input {
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
-}
-
-.fade {
-  animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-  from {opacity: 0; transform: translateY(15px);}
-  to {opacity: 1; transform: translateY(0);}
-}
-
-/* Neon Glow */
-.glow {
+h2 {
   font-size: 28px;
-  font-weight: bold;
-  color: #fff;
   text-shadow:
     0 0 10px #ff4d6d,
     0 0 20px #ff4d6d,
-    0 0 40px #ff1e4d,
-    0 0 80px #ff1e4d;
+    0 0 40px #ff1e4d;
 }
 
-/* Canvas */
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  pointer-events: none;
+p {
+  margin-top: 10px;
+  font-size: 16px;
+  opacity: 0.85;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="fireworks"></canvas>
-<div class="container" id="app"></div>
-
-<audio id="bgm" src="music.mp3" loop></audio>
-<audio id="clickSound" src="click.mp3"></audio>
-
-<script>
-const app = document.getElementById("app");
-const bgm = document.getElementById("bgm");
-const clickSound = document.getElementById("clickSound");
-
-let musicStarted = false;
-let fireworksStarted = false;
-
-// SOUND
-function click() {
-  try {
-    clickSound.currentTime = 0;
-    clickSound.play();
-  } catch(e){}
-}
-
-function startMusic() {
-  if (!musicStarted) {
-    bgm.play().catch(()=>{});
-    musicStarted = true;
-  }
-}
-
-function go(fn) {
-  click();
-  startMusic();
-  fn();
-}
-
-// TYPING EFFECT
-function typeText(element, text, speed = 25, callback) {
-  let i = 0;
-  element.innerHTML = "";
-  function typing() {
-    if (i < text.length) {
-      element.innerHTML += text.charAt(i);
-      i++;
-      setTimeout(typing, speed);
-    } else if (callback) {
-      callback();
-    }
-  }
-  typing();
-}
-
-// RENDER WITH TYPING
-function show(lines, buttonsHTML, glow=false) {
-  app.innerHTML = `<div class="fade" id="text"></div><div id="buttons"></div>`;
-  const textDiv = document.getElementById("text");
-  const btnDiv = document.getElementById("buttons");
-
-  let index = 0;
-
-  function nextLine() {
-    if (index < lines.length) {
-      let p = document.createElement("p");
-      if (glow && index === 0) p.classList.add("glow");
-      textDiv.appendChild(p);
-
-      typeText(p, lines[index], 25, () => {
-        index++;
-        nextLine();
-      });
-    } else {
-      btnDiv.innerHTML = buttonsHTML || "";
-    }
-  }
-
-  nextLine();
-}
-
-// PART 1
-function part1() {
-  show([
-    "Wait… today feels illegal 🤨",
-    "Someone just leveled up 👀",
-    "Should I say it… or make you work for it?"
-  ], `<button onclick="go(part2)">Continue</button>`);
-}
-
-// PART 2
-function part2() {
-  app.innerHTML = `
-    <button onclick="go(safe)">Click responsibly</button>
-    <button onclick="go(danger)">Click dangerously 😈</button>
-  `;
-}
-
-function safe() {
-  show([
-    "Hmm… safe choice",
-    "But today isn’t a safe day 😌"
-  ], `<button onclick="go(part3)">Continue</button>`);
-}
-
-function danger() {
-  show([
-    "Ah yes… I expected this",
-    "Chaos suits you."
-  ], `<button onclick="go(part3)">Continue</button>`);
-}
-
-// PART 3
-function part3() {
-  show([
-    "You and your random mood switches😭",
-    "Like one second normal…",
-    "Next second — completely different person.",
-    "And the award for…",
-    "Professional overthinker goes to…"
-  ], `<button onclick="go(afterMahan)">mahan insaan</button>`);
-}
-
-function afterMahan() {
-  show([
-    "Yes yes… we all know who that is 😌"
-  ], `<button onclick="go(part4)">Continue</button>`);
-}
-
-// PART 4
-function part4() {
-  show([
-    "From random conversations…",
-    "To those unexpected talks…",
-    "Somehow…",
-    "You became important without permission."
-  ], `<button onclick="go(part5)">Continue</button>`);
-}
-
-// PASSWORD
-function part5() {
-  app.innerHTML = `
-    <p>Wait…</p>
-    <p>Before you go further…</p>
-    <p>When was the <i>mahan insaan</i> born? 🎂</p>
-
-    <input id="pass"><br><br>
-    <button onclick="hint()">Hint</button>
-    <button onclick="check()">Submit</button>
-
-    <p id="hintText"></p>
-    <p id="error" style="color:red;"></p>
-  `;
-}
-
-function hint() {
-  click();
-  document.getElementById("hintText").innerText = "today 😌";
-}
-
-function check() {
-  click();
-  let val = document.getElementById("pass").value.trim().toLowerCase();
-  if (val === "6 may" || val === "6may") {
-    part6();
-  } else {
-    document.getElementById("error").innerText = "Wrong 😑";
-  }
-}
-
-// CELEBRATION
-function part6() {
-  startFireworks();
-  show([
-    "🎉 HAPPY BIRTHDAY MAHAN INSAAN 🎂",
-    "You survived another year 😌",
-    "Still chaotic… but we accept it.",
-    "A little annoying? Yes.",
-    "Important? Also yes.",
-    "But seriously…",
-    "I’m really glad you exist."
-  ], `<button onclick="go(part7)">okay… one last thing?</button>`, true);
-}
-
-// HIDDEN
-function part7() {
-  show([
-    "You matter more than you realize."
-  ], `<button onclick="go(end)">Go back</button>`);
-}
-
-// END
-function end() {
-  show([
-    "Too late now :)",
-    "You’re stuck with me."
-  ]);
-}
-
-// FIREWORKS
-const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
-
-let particles = [];
-
-function startFireworks() {
-  if (fireworksStarted) return;
-  fireworksStarted = true;
-
-  setInterval(() => {
-    for (let i = 0; i < 120; i++) {
-      particles.push({
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        dx: (Math.random() - 0.5) * 9,
-        dy: (Math.random() - 0.5) * 9,
-        life: 100
-      });
-    }
-  }, 700);
-}
-
-function animate() {
-  requestAnimationFrame(animate);
-  ctx.fillStyle = "rgba(0,0,0,0.15)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  for (let i = particles.length - 1; i >= 0; i--) {
-    let p = particles[i];
-    p.x += p.dx;
-    p.y += p.dy;
-    p.life--;
-
-    ctx.fillStyle = `hsl(${Math.random()*360},100%,60%)`;
-    ctx.fillRect(p.x, p.y, 3, 3);
-
-    if (p.life <= 0) particles.splice(i, 1);
-  }
-}
-
-animate();
-
-// START
-part1();
-</script>
+<div class="container">
+  <h2>You’ve already seen it 😌</h2>
+  <p>And now you’re stuck with the memory.</p>
+</div>
 
 </body>
 </html>
