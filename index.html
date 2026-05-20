@@ -190,17 +190,19 @@ function danger() {
 // PART 3
 function part3() {
   show([
-    "You and your random mood switches😭",
-    "Like one second normal…",
-    "Next second — completely different person.",
-    "And the award for…",
-    "Professional overthinker goes to…"
-  ], `<button onclick="go(afterMahan)">mahan insaan</button>`);
+    "You know what I like?",
+    "Nothing actually feels forced with you.",
+    "The conversations…",
+    "The randomness…",
+    "Everything just feels natural.",
+    "Now the question is...",
+    "Who am I talking about? 👀"
+  ], `<button onclick="go(cutie)">cutie 😌</button>`);
 }
 
-function afterMahan() {
+function cutie() {
   show([
-    "Yes yes… we all know who that is 😌"
+    "And yes, I said it 😤"
   ], `<button onclick="go(part4)">Continue</button>`);
 }
 
@@ -208,8 +210,8 @@ function afterMahan() {
 function part4() {
   show([
     "From random conversations…",
-    "To those unexpected talks…",
-    "Somehow…",
+    "To random nonsense…",
+    "To somehow talking way longer than expected…",
     "You became important without permission."
   ], `<button onclick="go(part5)">Continue</button>`);
 }
@@ -217,11 +219,12 @@ function part4() {
 // PASSWORD
 function part5() {
   app.innerHTML = `
-    <p>Wait…</p>
-    <p>Before you go further…</p>
-    <p>When was the <i>mahan insaan</i> born? 🎂</p>
+    <p>Wait wait wait...</p>
+    <p>One final test 😤</p>
+    <p>When did the <i>cutie</i> born? 🎂</p>
 
     <input id="pass"><br><br>
+
     <button onclick="hint()">Hint</button>
     <button onclick="check()">Submit</button>
 
@@ -237,33 +240,53 @@ function hint() {
 
 function check() {
   click();
-  let val = document.getElementById("pass").value.trim().toLowerCase();
-  if (val === "6 may" || val === "6may") {
+
+  let val=document.getElementById("pass")
+  .value
+  .trim()
+  .toLowerCase();
+
+  if (
+    val==="21 may" ||
+    val==="21may"
+  ){
     part6();
-  } else {
-    document.getElementById("error").innerText = "Wrong 😑";
+  }
+  else{
+    document.getElementById(
+      "error"
+    ).innerText="Wrong 😭";
   }
 }
 
 // CELEBRATION
 function part6() {
   startFireworks();
+
   show([
-    "🎉 HAPPY BIRTHDAY MAHAN INSAAN 🎂",
-    "You survived another year 😌",
-    "Still chaotic… but we accept it.",
-    "A little annoying? Yes.",
-    "Important? Also yes.",
-    "But seriously…",
-    "I’m really glad you exist."
-  ], `<button onclick="go(part7)">okay… one last thing?</button>`, true);
+    "🎉 HAPPY BIRTHDAY MONUU 🎂",
+    "You survived another year.",
+    "Still dramatic?",
+    "Yes.",
+    "Still one of my favorite people?",
+    "Absolutely.",
+    "But seriously...",
+    "Life got better after you became part of it."
+  ],
+  `<button onclick="go(part7)">
+  okay but one last thing?
+  </button>`,
+  true);
 }
 
 // HIDDEN
 function part7() {
   show([
     "You matter more than you realize."
-  ], `<button onclick="go(end)">Go back</button>`);
+  ],
+  `<button onclick="go(end)">
+  Go back
+  </button>`);
 }
 
 // END
